@@ -69,7 +69,7 @@ def create_tasks_db(parent_page_id: str, projects_db_id: str) -> str:
             "Priority": {"select": {"options": [
                 {"name": "High"}, {"name": "Medium"}, {"name": "Low"}
             ]}},
-            "Project": {"relation": {"database_id": projects_db_id, "single_property": True}},
+            "Project": {"relation": {"database_id": projects_db_id, "single_property": {}}},
             "Estimate (hrs)": {"number": {"format": "number"}},
             "Notes": {"rich_text": {}},
             # convenience text field to store source id if you ever sync/migrate later
@@ -168,10 +168,87 @@ def append_links_to_dashboard(dashboard_id: str, projects_db_id: str, tasks_db_i
         ]
     )
 
+def ensure_projects_schema(projects_db_id: str):
+    db = notion.databases.retrieve(projects_db_id)
+    props = db.get("properties", {})
+    updates = {}
+
+    # Name (title) will already exist. We won't touch it.
+
+    if "Status" not in props or props["Status"]["type"] != "status":
+        updates["Status"] = {"status": {}}
+
+    if "Area" not in props or props["Area"]["type"] != "select":
+        updates["Area"] = {
+            "select": {
+                "options": [
+                    {"name": "Work"},
+                    {"name": "Personal"},
+                    {"name": "Side Project"},
+                ]
+            }
+        }
+
+    if "Notes" not in props or props["Notes"]["type"] != "rich_text":
+        updates["Notes"] = {"rich_text": {}}
+
+    if updates:
+        notion.databases.update(projects_db_id, properties=updates)
+
+
+def ensure_tasks_schema(tasks_db_id: str, projects_db_id: str):
+    db = notion.databases.retrieve(tasks_db_id)
+    props = db.get("properties", {})
+    updates = {}
+
+    if "Status" not in props or props["Status"]["type"] != "status":
+        updates["Status"] = {"status": {}}
+
+    if "Due" not in props or props["Due"]["type"] != "date":
+        updates["Due"] = {"date": {}}
+
+    if "Priority" not in props or props["Priority"]["type"] != "select":
+        updates["Priority"] = {
+            "select": {
+                "options": [
+                    {"name": "High"},
+                    {"name": "Medium"},
+                    {"name": "Low"},
+                ]
+            }
+        }
+
+    if "Project" not in props or props["Project"]["type"] != "relation":
+        updates["Project"] = {
+            "relation": {
+                "database_id": projects_db_id,
+                "type": "single_property",
+                "single_property": {}
+            }
+        }
+
+    if "Estimate (hrs)" not in props or props["Estimate (hrs)"]["type"] != "number":
+        updates["Estimate (hrs)"] = {"number": {"format": "number"}}
+
+    if "Notes" not in props or props["Notes"]["type"] != "rich_text":
+        updates["Notes"] = {"rich_text": {}}
+
+    if "Source Page ID" not in props or props["Source Page ID"]["type"] != "rich_text":
+        updates["Source Page ID"] = {"rich_text": {}}
+
+    if updates:
+        notion.databases.update(tasks_db_id, properties=updates)
+
+
 def main():
     dash_id = ensure_dashboard(ROOT_PAGE_ID)
     projects_db_id = ensure_projects_db(dash_id)
+    ensure_projects_schema(projects_db_id)  # <-- add this
+    
     tasks_db_id = ensure_tasks_db(dash_id, projects_db_id)
+
+    ensure_tasks_schema(tasks_db_id, projects_db_id)  # <-- add this
+
 
     # Seed only if databases are empty
     def count_rows(db_id: str) -> int:

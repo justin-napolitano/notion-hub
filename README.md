@@ -1,64 +1,97 @@
+# Notion Task Hub
 
-# Notion Task Hub (Docker)
+Notion Task Hub is a Python-based tool that automates the creation of a task management workspace within Notion. It bootstraps a clean Task Hub setup including a Dashboard page, Projects and Master Tasks databases, and the necessary relations between them.
 
-This project bootstraps a clean **Task Hub** in Notion:
-- Creates a **Dashboard** page under your chosen parent page
-- Creates **📁 Projects** and **✅ Master Tasks** databases
-- Adds a Relation from Tasks → Projects
-- Seeds a few example projects/tasks
-- Adds links on the Dashboard to both databases
+## Features
 
-## Prereqs
-- A Notion **internal integration** with access to the destination workspace/databases
-- Your integration token: `NOTION_TOKEN`
-- The ID of an existing Notion page to use as the parent: `ROOT_PAGE_ID`
-- Docker
+- Creates a Dashboard page under a specified parent page in Notion
+- Creates two databases: Projects and Master Tasks
+- Adds a relation property linking Tasks to Projects
+- Seeds example projects and tasks for immediate use
+- Runs safely multiple times without duplicating schema
 
-## Quick Start
+## Tech Stack
 
-1. Build the image:
+- Python 3
+- Notion API (via notion-client Python SDK)
+- Docker for containerization
+
+## Getting Started
+
+### Prerequisites
+
+- A Notion internal integration with access to your workspace
+- Integration token (`NOTION_TOKEN`)
+- ID of an existing Notion page to serve as the parent (`ROOT_PAGE_ID`)
+- Docker installed
+
+### Installation and Usage
+
+1. Clone the repository:
+
+   ```bash
+   git clone https://github.com/justin-napolitano/notion-hub.git
+   cd notion-hub
+   ```
+
+2. Build the Docker image:
+
    ```bash
    docker build -t notion-task-hub .
    ```
 
-2. Create a `.env` file from the example and fill in your values:
+3. Create a `.env` file from the example and set your environment variables:
+
    ```bash
    cp .env.example .env
-   # edit .env to set NOTION_TOKEN and ROOT_PAGE_ID
+   # Edit .env to set NOTION_TOKEN and ROOT_PAGE_ID
    ```
 
-3. Run the container (one-time bootstrap):
+4. Run the container to bootstrap the Task Hub:
+
    ```bash
    docker run --rm --env-file .env notion-task-hub
    ```
 
-   If successful, you’ll see:
+   On success, you will see:
+
    ```
-   ✅ Done. Open your Notion dashboard page to see '🧭 Task Hub'.
+   ✅ Done. Open your Notion dashboard page to see 'Task Hub'.
    ```
 
 ### Notes
-- You can re-run the container safely; it won’t duplicate the schema. It checks for existing
-  Dashboard/Databases by title under the parent page.
-- The API cannot currently create **Linked Database views** with UI filters/grouping. Open the
-  created databases and add your preferred **Board/Table** views in the UI (e.g., filter `Status is not Done`).
 
-## Project Layout
-```text
+- The script checks for existing Dashboard and databases by title and will not duplicate them.
+- Linked database views with UI filters/grouping must be configured manually in Notion.
+
+## Project Structure
+
+```
 .
 ├─ Dockerfile
 ├─ requirements.txt
 ├─ .env.example
 ├─ src/
 │  └─ bootstrap_notion_task_hub.py
-└─ README.md
+├─ README.md
+├─ build.sh
+└─ run.sh
 ```
 
-## Environment Variables
-- `NOTION_TOKEN` — your internal integration token (e.g., starts with `secret_...`)
-- `ROOT_PAGE_ID` — the **parent page ID** where the Dashboard and databases will be created
+- `Dockerfile`: Defines the container image
+- `requirements.txt`: Python dependencies
+- `.env.example`: Example environment variables
+- `src/bootstrap_notion_task_hub.py`: Main Python script to create the Task Hub
+- `build.sh` and `run.sh`: Convenience scripts for building and running the Docker container
 
-## Troubleshooting
-- **403 / permission errors**: Ensure your integration is invited to the parent page and has access to create databases.
-- **Invalid page ID**: Confirm the `ROOT_PAGE_ID` is a valid Notion page (UUID form works best).
-- **Nothing appears**: Double-check the environment variables and that you’re in the correct workspace.
+## Future Work / Roadmap
+
+- Add support for creating linked database views with filters and grouping via the API
+- Expand seeded example data for more comprehensive templates
+- Add CLI flags for customization without rebuilding the container
+- Improve error handling and logging
+- Support for updating existing schema properties
+
+---
+
+This project assumes familiarity with Notion API tokens and page IDs, as well as basic Docker usage. It is designed for users who want to quickly set up a task management workspace in Notion programmatically.

@@ -20,6 +20,12 @@ seoSecondaryKeywords:
   - python script
   - task management workspace
 seoOptimized: true
+topicFamily: automation
+topicFamilyConfidence: 0.95
+topicFamilyNotes: >-
+  The post details a Python script automating the setup of a Notion task management workspace using
+  the Notion API, involving Docker and environment variables, clearly aligned with automation of
+  workflows and scripting as described in the 'automation' family.
 ---
 
 # Notion Task Hub: A Technical Overview
@@ -70,4 +76,5 @@ The script uses pagination helpers to list children blocks and databases efficie
 ## Summary
 
 This project provides a practical solution to automate the initial setup of a task management workspace in Notion using the official API and Python. It balances simplicity with functionality, leveraging Docker for reproducible environments. While limited by current API capabilities, it streamlines a common workflow for teams and individuals relying on Notion for task management.
+
 

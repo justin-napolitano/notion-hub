@@ -1,31 +1,36 @@
 ---
 slug: github-notion-hub
-title: 'Notion Task Hub: Automating Task Workspace Setup with Python and API'
+title: Automate Notion Task Management Setup with Python Script
 repo: justin-napolitano/notion-hub
 githubUrl: https://github.com/justin-napolitano/notion-hub
 generatedAt: '2025-11-23T09:21:35.094060Z'
 source: github-auto
 summary: >-
-  Technical overview of automating the creation of a standardized task management workspace in
-  Notion using Python and the official Notion API.
+  This project automates the setup of a task management workspace in Notion
+  using Python and the Notion API.
 tags:
   - notion
   - task-management
   - python
   - notion-api
   - docker
-seoPrimaryKeyword: notion task hub
+seoPrimaryKeyword: notion task management automation
 seoSecondaryKeywords:
-  - notion automation
-  - python script
-  - task management workspace
+  - notion python client
+  - dockerized workflow
+  - task hub setup
+  - notion integration
+  - project management automation
 seoOptimized: true
 topicFamily: automation
 topicFamilyConfidence: 0.95
 topicFamilyNotes: >-
-  The post details a Python script automating the setup of a Notion task management workspace using
-  the Notion API, involving Docker and environment variables, clearly aligned with automation of
-  workflows and scripting as described in the 'automation' family.
+  The post details a Python script automating the setup of a Notion task
+  management workspace using the Notion API, involving Docker and environment
+  variables, clearly aligned with automation of workflows and scripting as
+  described in the 'automation' family.
+kind: project
+id: github-notion-hub
 ---
 
 # Notion Task Hub: A Technical Overview
